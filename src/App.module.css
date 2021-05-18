@@ -4,6 +4,16 @@
 
 .topBar {
     height: 50px;
+    display: flex;
+    flex-direction: row;
+}
+
+.topBarSection {
+    flex: 1;
+}
+
+.languageSelector {
+    width: 100%;
 }
 
 .main {
