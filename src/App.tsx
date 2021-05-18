@@ -5,6 +5,8 @@ import axios from 'axios';
 
 function App() {
     const [token, setToken] = useState("");
+    const [code, setCode] = useState("");
+    const [result, setResult] = useState("");
 
     useEffect(() => {
         axios.post('/api/auth')
@@ -15,10 +17,24 @@ function App() {
 
     return <div className={styles.container}>
         <div className={styles.topBar}>
-            <button disabled={!token}>Run</button>
+            <button disabled={!token} onClick={() => {
+                axios.post('/api/exec', {
+                    language: 'javascript',
+                    code
+                }, {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                }).then(res => {
+                    setResult(res.data.combinedOutput)
+                })
+            }}>Run</button>
             <button>Sign In</button>
         </div>
-        <Editor offset={50}/>
+        <div className={styles.main}>
+            <Editor code={code} onChange={setCode}/>
+            <Editor code={result} onChange={() => {}} readOnly={true}/>
+        </div>
     </div>
 }
 

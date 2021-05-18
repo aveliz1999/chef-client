@@ -5,3 +5,9 @@
 .topBar {
     height: 50px;
 }
+
+.main {
+    height: calc(100% - 50px);
+    display: flex;
+    flex-direction: row;
+}
