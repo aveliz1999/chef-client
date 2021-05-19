@@ -2,6 +2,7 @@ import React, {useEffect, useState} from "react";
 import axios from "axios";
 import styles from "./ExecutionPage.module.css";
 import Editor from "../editor/Editor";
+import {Redirect} from "react-router-dom";
 
 type Language = {
     name: string,
@@ -17,6 +18,7 @@ function ExecutionPage() {
     const [result, setResult] = useState("Code output goes here!");
     const [languages, setLanguages] = useState<Language[]>([]);
     const [language, setLanguage] = useState<Language>();
+    const [redirectToLogin, setRedirectToLogin] = useState(false);
 
     useEffect(() => {
         axios.post('/api/auth')
@@ -29,6 +31,10 @@ function ExecutionPage() {
             })
     }, []);
 
+    if(redirectToLogin) {
+        return <Redirect to="/login"/>
+    }
+
     return <div className={styles.container}>
         <div className={styles.topBar}>
             <select className={styles.languageSelector} onChange={(s) => {
@@ -39,7 +45,9 @@ function ExecutionPage() {
                     languages.map(language => <option value={language.name}>{language.name}</option>)
                 }
             </select>
-            <button className={styles.button}>Sign In</button>
+            <button className={styles.button} onClick={() => {
+                setRedirectToLogin(true);
+            }}>Sign In</button>
             <button className={styles.button} disabled={!token} onClick={() => {
                 axios.post('/api/exec', {
                     language: language?.name,
