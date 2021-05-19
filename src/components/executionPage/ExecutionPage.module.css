@@ -34,3 +34,8 @@
     display: flex;
     flex-direction: row;
 }
+
+.resultsArea {
+    position: relative;
+    width: 100%;
+}

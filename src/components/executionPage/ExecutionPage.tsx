@@ -3,6 +3,7 @@ import axios from "axios";
 import styles from "./ExecutionPage.module.css";
 import Editor from "../editor/Editor";
 import {Redirect} from "react-router-dom";
+import LoadingModal from "../modal/loadingModal/LoadingModal";
 
 type Language = {
     name: string,
@@ -20,6 +21,7 @@ function ExecutionPage() {
     const [language, setLanguage] = useState<Language>();
     const [redirectToLogin, setRedirectToLogin] = useState(false);
     const [authenticated, setAuthenticated] = useState(false);
+    const [loading, setLoading] = useState(false);
 
     useEffect(() => {
         const key = localStorage.getItem('apiKey');
@@ -60,6 +62,7 @@ function ExecutionPage() {
                 }}>Sign In</button>
             }
             <button className={styles.button} disabled={!token} onClick={() => {
+                setLoading(true);
                 axios.post('/api/exec', {
                     language: language?.name,
                     code
@@ -69,12 +72,16 @@ function ExecutionPage() {
                     }
                 }).then(res => {
                     setResult(res.data.combinedOutput)
+                    setLoading(false);
                 })
             }}>Run</button>
         </div>
         <div className={styles.main}>
             <Editor language={language?.name.replaceAll(/\d/g, '') || ""} code={code} onChange={setCode}/>
-            <Editor language="" code={result} onChange={() => {}} readOnly={true}/>
+            <div className={styles.resultsArea}>
+                <Editor language="" code={result} onChange={() => {}} readOnly={true}/>
+                <LoadingModal visible={loading}/>
+            </div>
         </div>
     </div>
 }
