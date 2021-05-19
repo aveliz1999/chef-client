@@ -1,4 +1,4 @@
-import {useLocation} from 'react-router-dom';
+import {Redirect, useLocation} from 'react-router-dom';
 import styles from './GithubLoginPage.module.css';
 import {useEffect, useState} from "react";
 import axios from "axios";
@@ -9,11 +9,12 @@ function useQuery() {
 
 function GithubLoginPage() {
     const [code, setCode] = useState("");
+    const [redirectToHome, setRedirectToHome] = useState(false);
     const query = useQuery();
 
     useEffect(() => {
         setCode(query.get('code') || "");
-    }, []);
+    }, [query]);
 
     useEffect(() => {
         if(!code) {
@@ -22,15 +23,18 @@ function GithubLoginPage() {
         axios.post('/api/auth/github', {
             'code': code
         }).then(res => {
-            // TODO handle the authentication response
-            console.log(res.data);
+            localStorage.setItem('apiKey', res.data);
+            setRedirectToHome(true);
         })
     }, [code]);
 
-    // TODO use the code to authenticate with the server
+    if(redirectToHome) {
+        return <Redirect to="/"/>
+    }
+
     return <div className={styles.container}>
         {
-            code ? code : "No code"
+            code ? "" : "No code found."
         }
     </div>
 }

@@ -19,12 +19,20 @@ function ExecutionPage() {
     const [languages, setLanguages] = useState<Language[]>([]);
     const [language, setLanguage] = useState<Language>();
     const [redirectToLogin, setRedirectToLogin] = useState(false);
+    const [authenticated, setAuthenticated] = useState(false);
 
     useEffect(() => {
-        axios.post('/api/auth')
-            .then(res => {
-                setToken(res.data);
-            });
+        const key = localStorage.getItem('apiKey');
+        if(key) {
+            setToken(key);
+            setAuthenticated(true);
+        }
+        else {
+            axios.post('/api/auth')
+                .then(res => {
+                    setToken(res.data);
+                });
+        }
         axios.get('/api/exec/versions')
             .then(res => {
                 setLanguages(Object.values(res.data));
@@ -45,9 +53,12 @@ function ExecutionPage() {
                     languages.map(language => <option value={language.name}>{language.name}</option>)
                 }
             </select>
-            <button className={styles.button} onClick={() => {
-                setRedirectToLogin(true);
-            }}>Sign In</button>
+            {
+                !authenticated &&
+                <button className={styles.button} onClick={() => {
+                    setRedirectToLogin(true);
+                }}>Sign In</button>
+            }
             <button className={styles.button} disabled={!token} onClick={() => {
                 axios.post('/api/exec', {
                     language: language?.name,
