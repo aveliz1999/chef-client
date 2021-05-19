@@ -1,23 +1,36 @@
 .container {
     height: 100%;
+    overflow: hidden;
 }
 
 .topBar {
-    height: 50px;
+    height: 25px;
     display: flex;
-    flex-direction: row;
-}
-
-.topBarSection {
-    flex: 1;
+    background: #1e1e1e;
+    padding-bottom: 1px;
 }
 
 .languageSelector {
     width: 100%;
+    background: #1e1e1e;
+    color: #d4d4d4;
+    font-family: "Droid Sans Mono", monospace, monospace, "Droid Sans Fallback";
+    border-radius: 0;
+    outline: none;
+}
+
+.button {
+    width: 85px;
+    background: #1e1e1e;
+    color: #d4d4d4;
+    font-family: "Droid Sans Mono", monospace, monospace, "Droid Sans Fallback";
+    border-radius: 0;
+    border: 1px solid #d4d4d4;
+    outline: none;
 }
 
 .main {
-    height: calc(100% - 50px);
+    height: calc(100% - 25px);
     display: flex;
     flex-direction: row;
 }

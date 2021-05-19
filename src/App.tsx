@@ -13,8 +13,8 @@ type Language = {
 
 function App() {
     const [token, setToken] = useState("");
-    const [code, setCode] = useState("");
-    const [result, setResult] = useState("");
+    const [code, setCode] = useState("Type your code here!");
+    const [result, setResult] = useState("Code output goes here!");
     const [languages, setLanguages] = useState<Language[]>([]);
     const [language, setLanguage] = useState<Language>();
 
@@ -31,30 +31,27 @@ function App() {
 
     return <div className={styles.container}>
         <div className={styles.topBar}>
-            <div className={styles.topBarSection}>
-                <select className={styles.languageSelector} onChange={(s) => {
-                    setLanguage(languages[s.currentTarget.selectedIndex]);
-                }}>
-                    {
-                        languages.map(language => <option value={language.name}>{language.name}</option>)
+            <select className={styles.languageSelector} onChange={(s) => {
+                setLanguage(languages[s.currentTarget.selectedIndex - 1]);
+            }}>
+                <option value={""}>Select a Language</option>
+                {
+                    languages.map(language => <option value={language.name}>{language.name}</option>)
+                }
+            </select>
+            <button className={styles.button}>Sign In</button>
+            <button className={styles.button} disabled={!token} onClick={() => {
+                axios.post('/api/exec', {
+                    language: language?.name,
+                    code
+                }, {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
                     }
-                </select>
-            </div>
-            <div className={styles.topBarSection}>
-                <button disabled={!token} onClick={() => {
-                    axios.post('/api/exec', {
-                        language: language?.name,
-                        code
-                    }, {
-                        headers: {
-                            'Authorization': `Bearer ${token}`
-                        }
-                    }).then(res => {
-                        setResult(res.data.combinedOutput)
-                    })
-                }}>Run</button>
-                <button>Sign In</button>
-            </div>
+                }).then(res => {
+                    setResult(res.data.combinedOutput)
+                })
+            }}>Run</button>
         </div>
         <div className={styles.main}>
             <Editor language={language?.name.replaceAll(/\d/g, '') || ""} code={code} onChange={setCode}/>
